@@ -1,0 +1,87 @@
+@using System.ComponentModel.DataAnnotations;
+@using System.Linq;
+@using Syncfusion.Blazor;
+@using Syncfusion.Blazor.Data;
+@using Syncfusion.Blazor.Inputs;
+@using tmp91.Data;
+
+@page "/"
+
+@using Syncfusion.Blazor.Navigations
+
+<div id="menu">
+<SfMenu Items="@MenuItems"></SfMenu>
+
+<br/>
+<button @onclick="Recalculating">Redo menu</button>
+</div>
+
+
+<style>
+    #menu {
+        position: absolute;
+        top: 60px;
+        left: 0;
+        color: white;
+    }
+
+    #m1, #m2,
+    #m1 .e-anchor-wrap, 
+    #m2 .e-anchor-wrap {
+        width: 300px;
+        height: 300px;
+        color: white;
+    }
+
+</style>
+
+@code {
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        FixUp();            
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await base.OnAfterRenderAsync(firstRender);
+        if (firstRender)
+        {
+            // nothing to do
+        }
+    }
+
+    protected async override Task OnParametersSetAsync()
+    {
+        await base.OnParametersSetAsync();
+        // Loading ...
+        FixUp();
+        await Task.Delay(100);
+        FixUp();
+    }
+    public virtual void FixUp()
+    {
+        MenuItems.Clear();
+        MenuItems.AddRange(DoMenuItems());
+    }
+
+
+    public async Task Recalculating()
+    {
+        
+        MenuItems.Clear();
+        MenuItems.AddRange(DoMenuItems());
+        await InvokeAsync( StateHasChanged) ;
+    }
+
+    public List<MenuItem> MenuItems = new List<MenuItem>();
+    public List<MenuItem> DoMenuItems()
+    {
+        return new List<MenuItem>{
+            new MenuItem{ Id="m1", Url = "/counter" },
+        };
+    }
+
+}
+
